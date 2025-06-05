@@ -18,19 +18,17 @@ import {
   SidebarMenuSubItem,
 } from "@/components/ui/sidebar";
 import { Button } from "./ui/button";
-import  WorkspaceForm  from "./workspace/workspace-form";
+import WorkspaceForm from "./workspace/workspace-form";
 import { useState } from "react";
 
 export function NavWorkspaces({
   workspaces,
 }: {
   workspaces: {
+    id: number;
     name: string;
-    emoji: React.ReactNode;
-    pages: {
-      name: string;
-      emoji: React.ReactNode;
-    }[];
+    created_at: string;
+    updated_at: string;
   }[];
 }) {
   const [openForm, setOpenForm] = useState(false);
@@ -45,7 +43,6 @@ export function NavWorkspaces({
                 <SidebarMenuItem>
                   <SidebarMenuButton asChild>
                     <a href="#">
-                      <span>{workspace.emoji}</span>
                       <span>{workspace.name}</span>
                     </a>
                   </SidebarMenuButton>
@@ -62,7 +59,7 @@ export function NavWorkspaces({
                   </SidebarMenuAction>
                   <CollapsibleContent>
                     <SidebarMenuSub>
-                      {workspace.pages.map((page) => (
+                      {/* {workspace.pages.map((page) => (
                         <SidebarMenuSubItem key={page.name}>
                           <SidebarMenuSubButton asChild>
                             <a href="#">
@@ -71,19 +68,23 @@ export function NavWorkspaces({
                             </a>
                           </SidebarMenuSubButton>
                         </SidebarMenuSubItem>
-                      ))}
+                      ))} */}
                     </SidebarMenuSub>
                   </CollapsibleContent>
                 </SidebarMenuItem>
               </Collapsible>
             ))}
-            <Button variant="ghost" size={"sm"} onClick={() => setOpenForm(true)} >
+            <Button
+              variant="ghost"
+              size={"sm"}
+              onClick={() => setOpenForm(true)}
+            >
               <Plus />
             </Button>
           </SidebarMenu>
         </SidebarGroupContent>
       </SidebarGroup>
-      <WorkspaceForm isOpen={openForm} setIsOpen={setOpenForm} ></WorkspaceForm>
+      <WorkspaceForm isOpen={openForm} setIsOpen={setOpenForm}></WorkspaceForm>
     </>
   );
 }

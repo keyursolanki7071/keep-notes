@@ -1,0 +1,17 @@
+import supabase from "./supabase"
+
+const createWorkspace = async (name: string) => {
+    const {data, error} = await supabase.from('workspaces').insert({
+        name: name
+    })
+    if(error) throw error.message;
+    return data;
+}
+
+const getAllWorkspaces = async () => {
+    const {data, error} = await supabase.from('workspaces').select("*");
+    if(error) error.message;
+    return data;
+}
+
+export {createWorkspace, getAllWorkspaces};

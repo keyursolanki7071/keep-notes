@@ -6,6 +6,7 @@ import {
   SidebarContent,
   SidebarRail,
 } from "@/components/ui/sidebar"
+import { getAllWorkspaces } from "@/services/workspaceService"
 
 // This is sample data.
 const data = {
@@ -31,12 +32,28 @@ const data = {
   ],
 }
 
+interface Workspace {
+  id: number;
+  name: string;
+  created_at: string;
+  updated_at: string;
+}
+
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+
+  const [workspaces, setWorkspaces] = React.useState<Workspace[]>([]);
+
+  React.useEffect(() => {
+    getAllWorkspaces().then((data) => {
+      setWorkspaces(data ?? []);
+    });
+  }, [])
+
   return (
     <Sidebar className="border-r-0" {...props}>
       <SidebarContent>
         <NavFavorites favorites={data.favorites} />
-        <NavWorkspaces workspaces={data.workspaces} />
+        <NavWorkspaces workspaces={workspaces} />
       </SidebarContent>
       <SidebarRail />
     </Sidebar>
