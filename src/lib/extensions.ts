@@ -62,9 +62,7 @@ const extensions = [
     placeholder: {
       showOnlyCurrent: true,
     },
-    characterCount: {
-      limit: 50_000,
-    },
+    characterCount: false,
   }),
   History,
   SearchAndReplace,
