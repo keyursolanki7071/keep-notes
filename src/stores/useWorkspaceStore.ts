@@ -1,6 +1,6 @@
 
 import type { Workspace } from "@/interfaces";
-import { createWorkspace, deleteWorkspace, getAllWorkspaces } from "@/services/workspaceService";
+import { createNewNote, createWorkspace, deleteWorkspace, getAllWorkspaces, updateWorkspace } from "@/services/workspaceService";
 import toast from "react-hot-toast";
 import  {create} from "zustand";
 
@@ -9,6 +9,8 @@ interface WorkspaceStore {
     createWorkspace: (name: string) => Promise<void>;
     getAllWorkspaces: () => Promise<void>;
     deleteWorkspace: (id: number) => Promise<void>;
+    updateWorkspace: (id: number, name: string) => Promise<void>;
+    createNote: (workspace: number, name: string) => Promise<void>;
 }
 
 const useWorkspaceStore = create<WorkspaceStore>((set, get) => ({
@@ -33,6 +35,26 @@ const useWorkspaceStore = create<WorkspaceStore>((set, get) => ({
             await deleteWorkspace(id);
             set({workspaces: get().workspaces.filter(workspace => workspace.id !== id)})
             toast.success("Workspace deleted");
+        } catch (error: any) {
+            toast.error(error)
+        }
+    },
+    updateWorkspace: async (id: number, name: string) => {
+        try {
+
+            const data = await updateWorkspace(id, name);
+            const updatedList = get().workspaces.map(ws =>
+                ws.id === id ? data : ws
+            )
+            set({workspaces: updatedList});
+
+        } catch (error: any) {
+            toast.error(error);
+        }
+    },
+    createNote: async (workspace: number, name: string) => {
+        try {
+            const data = await createNewNote(workspace, name);
         } catch (error: any) {
             toast.error(error)
         }

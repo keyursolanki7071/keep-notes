@@ -1,5 +1,6 @@
 import {
   ChevronRight,
+  Edit,
   MoreHorizontal,
   Notebook,
   Plus,
@@ -21,11 +22,13 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarMenuSub,
+  SidebarMenuSubButton,
+  SidebarMenuSubItem,
   useSidebar,
 } from "@/components/ui/sidebar";
 import { Button } from "./ui/button";
 import WorkspaceForm from "./workspace/workspace-form";
-import { useState } from "react";
+import React, { useState, type InputEvent } from "react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -35,19 +38,37 @@ import {
 } from "./ui/dropdown-menu";
 import type { Workspace } from "@/interfaces";
 import { useWorkspaceStore } from "@/stores/useWorkspaceStore";
+import { Input } from "./ui/input";
+import NewNoteForm from "./workspace/new-note-form";
 
-export function NavWorkspaces({
-  workspaces,
-}: {
-  workspaces: Workspace[];
-}) {
+export function NavWorkspaces({ workspaces }: { workspaces: Workspace[] }) {
   const [openForm, setOpenForm] = useState(false);
+  const [openNoteForm, setOpenNoteForm] = useState(false);
+  const [createNoteWorkspace, setCreateNoteWorkspace] = useState<number | null>(
+    null
+  );
   const { isMobile } = useSidebar();
-  const {deleteWorkspace} = useWorkspaceStore();
-
+  const { deleteWorkspace, updateWorkspace } = useWorkspaceStore();
+  const [editWorkspace, setEditWorkspace] = useState<number | null>(null);
+  const [updatedName, setUpdatedName] = useState("");
 
   const handleDelete = async (id: number) => {
-      await deleteWorkspace(id);
+    await deleteWorkspace(id);
+  };
+
+  const handleUpdate = async (e: KeyboardEvent) => {
+    if (e.key === "Enter" && editWorkspace) {
+      await updateWorkspace(editWorkspace, updatedName);
+      setEditWorkspace(null);
+      setUpdatedName("");
+    }
+  };
+
+  const handleCreateNote = (workspaceId: number) => {
+    if (workspaceId) {
+      setCreateNoteWorkspace(workspaceId);
+      setOpenNoteForm(true);
+    }
   };
 
   return (
@@ -58,12 +79,24 @@ export function NavWorkspaces({
           <SidebarMenu>
             {workspaces && workspaces.length > 0 ? (
               workspaces.map((workspace) => (
-                <Collapsible key={workspace.name}>
+                <Collapsible key={workspace.id}>
                   <SidebarMenuItem>
                     <SidebarMenuButton asChild>
-                      <a href="#" className="pl-10">
-                        <span>{workspace.name}</span>
-                      </a>
+                      {editWorkspace === workspace.id ? (
+                        <Input
+                          value={updatedName}
+                          onBlur={() => {
+                            setEditWorkspace(null);
+                            setUpdatedName("");
+                          }}
+                          onKeyDown={handleUpdate}
+                          onChange={(e) => setUpdatedName(e.target.value)}
+                        ></Input>
+                      ) : (
+                        <a href="#" className="pl-10">
+                          <span>{workspace.name}</span>
+                        </a>
+                      )}
                     </SidebarMenuButton>
                     <CollapsibleTrigger asChild>
                       <SidebarMenuAction
@@ -82,13 +115,24 @@ export function NavWorkspaces({
                           </SidebarMenuAction>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent
-                          className="w-56 rounded-lg"
+                          className="w-56 rounded-lg z-[100]"
                           side={isMobile ? "bottom" : "right"}
                           align={isMobile ? "end" : "start"}
                         >
-                          <DropdownMenuItem>
+                          <DropdownMenuItem
+                            onClick={() => handleCreateNote(workspace.id)}
+                          >
                             <Notebook className="text-muted-foreground"></Notebook>
-                            <span>Add Note</span>
+                            <span>New Note</span>
+                          </DropdownMenuItem>
+                          <DropdownMenuItem
+                            onClick={() => {
+                              setEditWorkspace(workspace.id);
+                              setUpdatedName(workspace.name);
+                            }}
+                          >
+                            <Edit className="text-muted-foreground"></Edit>
+                            <span>Edit</span>
                           </DropdownMenuItem>
                           <DropdownMenuSeparator />
                           <DropdownMenuItem
@@ -100,27 +144,32 @@ export function NavWorkspaces({
                         </DropdownMenuContent>
                       </DropdownMenu>
                     </SidebarMenuAction>
-                    <CollapsibleContent>
-                      <SidebarMenuSub>
-                        {/* {workspace.pages.map((page) => (
-                        <SidebarMenuSubItem key={page.name}>
-                          <SidebarMenuSubButton asChild>
-                            <a href="#">
-                              <span>{page.emoji}</span>
-                              <span>{page.name}</span>
-                            </a>
-                          </SidebarMenuSubButton>
-                        </SidebarMenuSubItem>
-                      ))} */}
-                      </SidebarMenuSub>
-                    </CollapsibleContent>
+                    {workspace.notes && workspace.notes.length > 0 ? (
+                      <CollapsibleContent>
+                        <SidebarMenuSub>
+                          {workspace.notes.map((note) => (
+                            <SidebarMenuSubItem key={note.id}>
+                              <SidebarMenuSubButton asChild>
+                                <a href="#">
+                                  <span>{note.name}</span>
+                                </a>
+                              </SidebarMenuSubButton>
+                            </SidebarMenuSubItem>
+                          ))}
+                        </SidebarMenuSub>
+                      </CollapsibleContent>
+                    ) : (
+                      <CollapsibleContent>
+                        <SidebarMenuSub>
+                          <span className="text-muted-foreground italic">No Notes</span>
+                        </SidebarMenuSub>
+                      </CollapsibleContent>
+                    )}
                   </SidebarMenuItem>
                 </Collapsible>
               ))
             ) : (
-              <SidebarMenuItem>
-                No workspace found
-              </SidebarMenuItem>
+              <SidebarMenuItem>No workspace found</SidebarMenuItem>
             )}
             <Button
               variant="ghost"
@@ -133,6 +182,11 @@ export function NavWorkspaces({
         </SidebarGroupContent>
       </SidebarGroup>
       <WorkspaceForm isOpen={openForm} setIsOpen={setOpenForm}></WorkspaceForm>
+      <NewNoteForm
+        isOpen={openNoteForm}
+        setIsOpen={setOpenNoteForm}
+        workspace={createNoteWorkspace}
+      ></NewNoteForm>
     </>
   );
 }
