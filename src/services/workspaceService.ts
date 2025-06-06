@@ -14,4 +14,12 @@ const getAllWorkspaces = async () => {
     return data;
 }
 
-export {createWorkspace, getAllWorkspaces};
+const deleteWorkspace = async (id: number) => {
+    const {data, error} = await supabase.from('workspaces').delete().eq('id', id);
+    if(error) {
+        throw error.message;
+    }
+    return data;
+}
+
+export {createWorkspace, getAllWorkspaces, deleteWorkspace};

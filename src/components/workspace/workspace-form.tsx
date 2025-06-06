@@ -21,9 +21,15 @@ interface WorkspaceFormProps {
 const WorkspaceForm: React.FC<WorkspaceFormProps> = ({isOpen, setIsOpen}) => {
 
   const [name, setName] = useState("");
+  const [nameError, setNameError] = useState(false);
+
   const handleSubmit = async () => {
     try {
-
+      setNameError(false);
+      if(!name) {
+        setNameError(true);
+        return false;
+      }
       await createWorkspace(name);
       toast.success("Workspace created.");
       setIsOpen(false);
@@ -49,6 +55,9 @@ const WorkspaceForm: React.FC<WorkspaceFormProps> = ({isOpen, setIsOpen}) => {
               onInput={(e: React.FormEvent<HTMLInputElement>) => setName((e.target as HTMLInputElement).value)}
               value={name}
             />
+            { nameError ? <div className="text-red-500">
+              Please enter name
+            </div> : "" }
           </div>
         </div>
         <DialogFooter>
