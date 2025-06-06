@@ -3,7 +3,7 @@ import supabase from "./supabase"
 const createWorkspace = async (name: string) => {
     const {data, error} = await supabase.from('workspaces').insert({
         name: name
-    })
+    }).select().single()
     if(error) throw error.message;
     return data;
 }

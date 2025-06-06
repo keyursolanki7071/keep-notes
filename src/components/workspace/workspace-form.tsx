@@ -1,4 +1,4 @@
-import { Button } from "@/components/ui/button"
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogClose,
@@ -6,41 +6,35 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { createWorkspace } from "@/services/workspaceService"
-import React, { useState } from "react"
-import toast from "react-hot-toast"
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { useWorkspaceStore } from "@/stores/useWorkspaceStore";
+import React, { useState } from "react";
 
 interface WorkspaceFormProps {
-    isOpen: boolean;
-    setIsOpen: (value: boolean) => void;
+  isOpen: boolean;
+  setIsOpen: (value: boolean) => void;
 }
 
-const WorkspaceForm: React.FC<WorkspaceFormProps> = ({isOpen, setIsOpen}) => {
-
+const WorkspaceForm: React.FC<WorkspaceFormProps> = ({ isOpen, setIsOpen }) => {
   const [name, setName] = useState("");
   const [nameError, setNameError] = useState(false);
+  const { createWorkspace } = useWorkspaceStore();
 
   const handleSubmit = async () => {
-    try {
-      setNameError(false);
-      if(!name) {
-        setNameError(true);
-        return false;
-      }
-      await createWorkspace(name);
-      toast.success("Workspace created.");
-      setIsOpen(false);
-      setName("");
-    } catch (error: any) {
-      toast.error(error);
+    setNameError(false);
+    if (!name) {
+      setNameError(true);
+      return false;
     }
-  }
+    await createWorkspace(name);
+    setIsOpen(false);
+    setName("");
+  };
 
   return (
-    <Dialog open={isOpen} >
+    <Dialog open={isOpen}>
       <DialogContent className="sm:max-w-md" showCloseButton={false}>
         <DialogHeader>
           <DialogTitle>Create Workspace</DialogTitle>
@@ -52,23 +46,29 @@ const WorkspaceForm: React.FC<WorkspaceFormProps> = ({isOpen, setIsOpen}) => {
             </Label>
             <Input
               id="workspaceName"
-              onInput={(e: React.FormEvent<HTMLInputElement>) => setName((e.target as HTMLInputElement).value)}
+              onInput={(e: React.FormEvent<HTMLInputElement>) =>
+                setName((e.target as HTMLInputElement).value)
+              }
               value={name}
             />
-            { nameError ? <div className="text-red-500">
-              Please enter name
-            </div> : "" }
+            {nameError ? (
+              <div className="text-red-500">Please enter name</div>
+            ) : (
+              ""
+            )}
           </div>
         </div>
         <DialogFooter>
-            <DialogClose onClick={() => setIsOpen(false)}>
-              <Button variant="outline">Cancel</Button>
-            </DialogClose>
-            <Button type="button" onClick={handleSubmit} >Save changes</Button>
-          </DialogFooter>
+          <DialogClose onClick={() => setIsOpen(false)}>
+            <Button variant="outline">Cancel</Button>
+          </DialogClose>
+          <Button type="button" onClick={handleSubmit}>
+            Save changes
+          </Button>
+        </DialogFooter>
       </DialogContent>
     </Dialog>
-  )
-}
+  );
+};
 
 export default WorkspaceForm;

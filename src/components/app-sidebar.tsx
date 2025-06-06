@@ -6,7 +6,7 @@ import {
   SidebarContent,
   SidebarRail,
 } from "@/components/ui/sidebar"
-import { getAllWorkspaces } from "@/services/workspaceService"
+import {useWorkspaceStore} from "@/stores/useWorkspaceStore"
 
 // This is sample data.
 const data = {
@@ -32,21 +32,16 @@ const data = {
   ],
 }
 
-interface Workspace {
-  id: number;
-  name: string;
-  created_at: string;
-  updated_at: string;
-}
-
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 
-  const [workspaces, setWorkspaces] = React.useState<Workspace[]>([]);
+  // const [workspaces, setWorkspaces] = React.useState<Workspace[]>([]);
+  const {workspaces, getAllWorkspaces} = useWorkspaceStore();
 
   React.useEffect(() => {
-    getAllWorkspaces().then((data) => {
-      setWorkspaces(data ?? []);
-    });
+    // getAllWorkspaces().then((data) => {
+    //   setWorkspaces(data ?? []);
+    // });
+    getAllWorkspaces();
   }, [])
 
   return (

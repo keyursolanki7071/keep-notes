@@ -21,8 +21,6 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarMenuSub,
-  SidebarMenuSubButton,
-  SidebarMenuSubItem,
   useSidebar,
 } from "@/components/ui/sidebar";
 import { Button } from "./ui/button";
@@ -35,29 +33,21 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
-import toast from "react-hot-toast";
-import { deleteWorkspace } from "@/services/workspaceService";
+import type { Workspace } from "@/interfaces";
+import { useWorkspaceStore } from "@/stores/useWorkspaceStore";
 
 export function NavWorkspaces({
   workspaces,
 }: {
-  workspaces: {
-    id: number;
-    name: string;
-    created_at: string;
-    updated_at: string;
-  }[];
+  workspaces: Workspace[];
 }) {
   const [openForm, setOpenForm] = useState(false);
   const { isMobile } = useSidebar();
+  const {deleteWorkspace} = useWorkspaceStore();
+
 
   const handleDelete = async (id: number) => {
-    try {
       await deleteWorkspace(id);
-      toast.success("Workspace deleted.");
-    } catch (error: any) {
-      toast.error(error);
-    }
   };
 
   return (
@@ -71,7 +61,7 @@ export function NavWorkspaces({
                 <Collapsible key={workspace.name}>
                   <SidebarMenuItem>
                     <SidebarMenuButton asChild>
-                      <a href="#">
+                      <a href="#" className="pl-10">
                         <span>{workspace.name}</span>
                       </a>
                     </SidebarMenuButton>
