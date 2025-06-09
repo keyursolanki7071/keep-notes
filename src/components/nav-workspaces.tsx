@@ -40,6 +40,7 @@ import type { Workspace } from "@/interfaces";
 import { useWorkspaceStore } from "@/stores/useWorkspaceStore";
 import { Input } from "./ui/input";
 import NewNoteForm from "./workspace/new-note-form";
+import { Link } from "react-router";
 
 export function NavWorkspaces({ workspaces }: { workspaces: Workspace[] }) {
   const [openForm, setOpenForm] = useState(false);
@@ -150,9 +151,9 @@ export function NavWorkspaces({ workspaces }: { workspaces: Workspace[] }) {
                           {workspace.notes.map((note) => (
                             <SidebarMenuSubItem key={note.id}>
                               <SidebarMenuSubButton asChild>
-                                <a href="#">
+                                <Link to={`/note/${note.id}`}>
                                   <span>{note.name}</span>
-                                </a>
+                                </Link>
                               </SidebarMenuSubButton>
                             </SidebarMenuSubItem>
                           ))}

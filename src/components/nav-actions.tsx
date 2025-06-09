@@ -2,20 +2,7 @@
 
 import * as React from "react"
 import {
-  ArrowDown,
-  ArrowUp,
-  Bell,
-  Copy,
-  CornerUpLeft,
-  CornerUpRight,
-  FileText,
-  GalleryVerticalEnd,
-  LineChart,
-  Link,
   MoreHorizontal,
-  Settings2,
-  Star,
-  Trash,
   Trash2,
 } from "lucide-react"
 
@@ -34,27 +21,33 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
-
-const data = [
-  [
-    {
-      label: "Delete",
-      icon: Trash,
-    },
-  ],
-]
+import { useWorkspaceStore } from "@/stores/useWorkspaceStore"
+import toast from "react-hot-toast"
+import { useNavigate } from "react-router"
 
 export function NavActions() {
   const [isOpen, setIsOpen] = React.useState(false)
+  const navigate = useNavigate();
+
+  const {activeNote, deleteNote} = useWorkspaceStore();
+  const handleDelete = async () => {
+    if(!activeNote) {
+      toast.error('Nothing to delete');
+      return false;
+    }
+    await deleteNote(activeNote);
+    return navigate("/");
+  }
+
+  if(!activeNote) {
+    return "";
+  }
 
   return (
     <div className="flex items-center gap-2 text-sm">
-      <div className="text-muted-foreground hidden font-medium md:inline-block">
-        Edit Oct 08
-      </div>
       
-      <Popover open={isOpen} onOpenChange={setIsOpen}>
-        <PopoverTrigger asChild>
+      <Popover open={isOpen} onOpenChange={setIsOpen} >
+        <PopoverTrigger asChild >
           <Button
             variant="ghost"
             size="icon"
@@ -69,21 +62,17 @@ export function NavActions() {
         >
           <Sidebar collapsible="none" className="bg-transparent">
             <SidebarContent>
-              {data.map((group, index) => (
-                <SidebarGroup key={index} className="border-b last:border-none">
+                <SidebarGroup className="border-b last:border-none">
                   <SidebarGroupContent className="gap-0">
                     <SidebarMenu>
-                      {group.map((item, index) => (
-                        <SidebarMenuItem key={index}>
-                          <SidebarMenuButton>
-                            <item.icon /> <span>{item.label}</span>
+                        <SidebarMenuItem>
+                          <SidebarMenuButton onClick={handleDelete} >
+                            <Trash2 /> <span>Delete</span>
                           </SidebarMenuButton>
                         </SidebarMenuItem>
-                      ))}
                     </SidebarMenu>
                   </SidebarGroupContent>
                 </SidebarGroup>
-              ))}
             </SidebarContent>
           </Sidebar>
         </PopoverContent>

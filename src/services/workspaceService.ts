@@ -41,4 +41,10 @@ const createNewNote = async (workspace: number, name: string) => {
     return data;
 }
 
-export {createWorkspace, getAllWorkspaces, deleteWorkspace, updateWorkspace, createNewNote};
+const deleteNote = async (id: number) => {
+    const {data, error} = await supabase.from('notes').delete().eq('id', id);
+    if(error) throw error.message;
+    return data;
+}
+
+export {createWorkspace, getAllWorkspaces, deleteWorkspace, updateWorkspace, createNewNote, deleteNote};
