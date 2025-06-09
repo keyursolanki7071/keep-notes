@@ -1,33 +1,51 @@
 import Editor from "@/components/rich-text-editor";
 import { useWorkspaceStore } from "@/stores/useWorkspaceStore";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useParams } from "react-router";
 
 const Index = () => {
+  const { id } = useParams();
+  const { setActiveNote, getNote, updateNoteContent } = useWorkspaceStore();
+  const [content, setContent] = useState("");
+  const [loading, setLoading] = useState(false);
 
-    const {id} = useParams();
-    const {setActiveNote, getNote} = useWorkspaceStore();
+  useEffect(() => {
+    if (id) {
+      setLoading(true);
+      getNote(Number(id)).then((data) => {
+        setActiveNote({
+          id: data.id,
+          name: data.name,
+          favourite: data.favourite,
+          workspace_id: data.workspace_id,
+        });
+        setContent(data.content);
+        setLoading(false);
+      });
+    }
+    return () => {
+      setActiveNote(null);
+    };
+  }, [id]);
 
-    useEffect(() => {
-        if(id) {
-            getNote(Number(id)).then((data) => {
-                setActiveNote({
-                    id: data.id,
-                    name: data.name,
-                    favourite: data.favourite,
-                    workspace_id: data.workspace_id
-                });
-            })
-        }
-        return () => {
-            setActiveNote(null);
-        }
-    }, [id])
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      updateNoteContent(Number(id), content);
+    }, 3000);
+    return () => {
+      clearTimeout(handler);
+    };
+  }, [content]);
 
-    const [content, setContent] = useState("");
-    return <>
-    <Editor content={content} setContent={setContent} ></Editor>
+  return (
+    <>
+      {loading ? (
+        <h1>Loading....</h1>
+      ) : (
+        <Editor content={content} setContent={setContent}></Editor>
+      )}
     </>
-}
+  );
+};
 
 export default Index;

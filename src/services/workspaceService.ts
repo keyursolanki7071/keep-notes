@@ -69,5 +69,12 @@ const getAllFavNotes = async () => {
     return data;
 }
 
+const updateNoteContent = async (id: number, content: string) => {
+    const {data, error} = await supabase.from('notes').update({
+        "content" : content
+    }).eq("id", id).single();
+    if(error) throw error.message;
+    return data;
+}
 
-export {createWorkspace, getAllWorkspaces, deleteWorkspace, updateWorkspace, createNewNote, deleteNote, getNote, markAsFavourite, getAllFavNotes};
+export {createWorkspace, getAllWorkspaces, deleteWorkspace, updateWorkspace, createNewNote, deleteNote, getNote, markAsFavourite, getAllFavNotes, updateNoteContent};

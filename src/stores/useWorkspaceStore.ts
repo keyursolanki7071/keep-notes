@@ -8,6 +8,7 @@ import {
   getAllWorkspaces,
   getNote,
   markAsFavourite,
+  updateNoteContent,
   updateWorkspace,
 } from "@/services/workspaceService";
 import toast from "react-hot-toast";
@@ -31,9 +32,10 @@ interface WorkspaceStore {
   updateWorkspace: (id: number, name: string) => Promise<void>;
   createNote: (workspace: number, name: string) => Promise<void>;
   deleteNote: (id: number) => Promise<void>;
-  getNote: (id: number) => Promise<ActiveNote>;
+  getNote: (id: number) => Promise<Note>;
   markAsFavourite: (id: number, favourite: boolean) => Promise<Note>;
-  getFavouriteNotes: () => Promise<Note[]>
+  getFavouriteNotes: () => Promise<Note[]>;
+  updateNoteContent: (id: number, content: string) => Promise<void>;
 }
 
 const useWorkspaceStore = create<WorkspaceStore>((set, get) => ({
@@ -135,6 +137,15 @@ const useWorkspaceStore = create<WorkspaceStore>((set, get) => ({
     } catch (error: any) {
       toast.error(error);
       return [];
+    }
+  },
+  updateNoteContent: async (id: number, content: string) => {
+    try {
+
+      const note = await updateNoteContent(id, content);
+
+    } catch (error: any) {
+      toast.error(error);
     }
   }
 }));
