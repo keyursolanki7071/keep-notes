@@ -6,16 +6,23 @@ import { useParams } from "react-router";
 const Index = () => {
 
     const {id} = useParams();
-    const {setActiveNote} = useWorkspaceStore();
+    const {setActiveNote, getNote} = useWorkspaceStore();
+
     useEffect(() => {
         if(id) {
-            setActiveNote(Number(id));
+            getNote(Number(id)).then((data) => {
+                setActiveNote({
+                    id: data.id,
+                    name: data.name,
+                    favourite: data.favourite,
+                    workspace_id: data.workspace_id
+                });
+            })
         }
-
         return () => {
             setActiveNote(null);
         }
-    }, [id, setActiveNote])
+    }, [id])
 
     const [content, setContent] = useState("");
     return <>

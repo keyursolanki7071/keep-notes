@@ -3,6 +3,7 @@ import {
   Edit,
   MoreHorizontal,
   Notebook,
+  PinIcon,
   Plus,
   StarOff,
   Trash2,
@@ -80,7 +81,7 @@ export function NavWorkspaces({ workspaces }: { workspaces: Workspace[] }) {
           <SidebarMenu>
             {workspaces && workspaces.length > 0 ? (
               workspaces.map((workspace) => (
-                <Collapsible key={workspace.id}>
+                <Collapsible key={workspace.id} defaultOpen>
                   <SidebarMenuItem>
                     <SidebarMenuButton asChild>
                       {editWorkspace === workspace.id ? (
@@ -94,12 +95,12 @@ export function NavWorkspaces({ workspaces }: { workspaces: Workspace[] }) {
                           onChange={(e) => setUpdatedName(e.target.value)}
                         ></Input>
                       ) : (
-                        <a href="#" className="pl-10">
-                          <span>{workspace.name}</span>
-                        </a>
+                        <span className="pl-10">
+                          <span className="font-bold">{workspace.name}</span>
+                        </span>
                       )}
                     </SidebarMenuButton>
-                    <CollapsibleTrigger asChild>
+                    <CollapsibleTrigger asChild hidden={true} >
                       <SidebarMenuAction
                         className="bg-sidebar-accent text-sidebar-accent-foreground left-2 data-[state=open]:rotate-90"
                         showOnHover
@@ -149,7 +150,7 @@ export function NavWorkspaces({ workspaces }: { workspaces: Workspace[] }) {
                       <CollapsibleContent>
                         <SidebarMenuSub>
                           {workspace.notes.map((note) => (
-                            <SidebarMenuSubItem key={note.id}>
+                            <SidebarMenuSubItem key={note.id} >
                               <SidebarMenuSubButton asChild>
                                 <Link to={`/note/${note.id}`}>
                                   <span>{note.name}</span>

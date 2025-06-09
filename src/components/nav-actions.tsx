@@ -3,6 +3,8 @@
 import * as React from "react"
 import {
   MoreHorizontal,
+  StarIcon,
+  StarOffIcon,
   Trash2,
 } from "lucide-react"
 
@@ -29,17 +31,29 @@ export function NavActions() {
   const [isOpen, setIsOpen] = React.useState(false)
   const navigate = useNavigate();
 
-  const {activeNote, deleteNote} = useWorkspaceStore();
+  const {activeNote, deleteNote, setActiveNote, markAsFavourite} = useWorkspaceStore();
   const handleDelete = async () => {
-    if(!activeNote) {
+    if(!activeNote?.id) {
       toast.error('Nothing to delete');
       return false;
     }
-    await deleteNote(activeNote);
+    await deleteNote(activeNote.id);
     return navigate("/");
   }
 
-  if(!activeNote) {
+  const handleMarkAsFavourite = async () => {
+    if(!activeNote?.id) {
+      toast.error('Nothing to delete');
+      return false;
+    }
+    const note = await markAsFavourite(activeNote?.id, !activeNote?.favourite);
+    const message = note.favourite ? "Added to favourite" : "Removed from favourite";
+    toast.success(message);
+    activeNote.favourite = note.favourite;
+    setActiveNote(activeNote);
+  }
+
+  if(!activeNote?.id) {
     return "";
   }
 
@@ -68,6 +82,13 @@ export function NavActions() {
                         <SidebarMenuItem>
                           <SidebarMenuButton onClick={handleDelete} >
                             <Trash2 /> <span>Delete</span>
+                          </SidebarMenuButton>
+                          <SidebarMenuButton onClick={handleMarkAsFavourite} >
+                            {activeNote.favourite ? (
+                              <><StarOffIcon></StarOffIcon>Remove From Favourite</>
+                            ) : (
+                              <><StarIcon></StarIcon>Mark as Favourite</>
+                            )}
                           </SidebarMenuButton>
                         </SidebarMenuItem>
                     </SidebarMenu>

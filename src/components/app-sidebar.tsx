@@ -8,46 +8,19 @@ import {
 } from "@/components/ui/sidebar"
 import {useWorkspaceStore} from "@/stores/useWorkspaceStore"
 
-// This is sample data.
-const data = {
-  favorites: [
-    {
-      name: "Project Management & Task Tracking",
-      url: "#",
-      emoji: "📊",
-    },
-  ],
-  workspaces: [
-    {
-      name: "Personal Life Management",
-      emoji: "🏠",
-      pages: [
-        {
-          name: "Daily Journal & Reflection",
-          url: "#",
-          emoji: "📔",
-        },
-      ],
-    },
-  ],
-}
-
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 
-  // const [workspaces, setWorkspaces] = React.useState<Workspace[]>([]);
-  const {workspaces, getAllWorkspaces} = useWorkspaceStore();
+  const {workspaces, getAllWorkspaces, favouriteNotes, getFavouriteNotes} = useWorkspaceStore();
 
   React.useEffect(() => {
-    // getAllWorkspaces().then((data) => {
-    //   setWorkspaces(data ?? []);
-    // });
     getAllWorkspaces();
+    getFavouriteNotes();
   }, [])
 
   return (
     <Sidebar className="border-r-0" {...props}>
       <SidebarContent>
-        <NavFavorites favorites={data.favorites} />
+        <NavFavorites notes={favouriteNotes} />
         <NavWorkspaces workspaces={workspaces} />
       </SidebarContent>
       <SidebarRail />

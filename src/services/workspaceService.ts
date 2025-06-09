@@ -47,4 +47,27 @@ const deleteNote = async (id: number) => {
     return data;
 }
 
-export {createWorkspace, getAllWorkspaces, deleteWorkspace, updateWorkspace, createNewNote, deleteNote};
+const getNote = async (id: number) => {
+    const {data,error} = await supabase.from('notes').select("*").eq('id', id).single();
+    if(error) {
+        throw error.message;
+    }
+    return data;
+}
+
+const markAsFavourite = async (id: number, favourite: boolean) => {
+    const {data, error} = await supabase.from('notes').update({favourite: favourite}).eq('id', id).select().single();
+    if(error) {
+        throw error.message;
+    }
+    return data;
+}
+
+const getAllFavNotes = async () => {
+    const {data, error} = await supabase.from('notes').select(`*`).eq('favourite', true);
+    if(error) error.message;
+    return data;
+}
+
+
+export {createWorkspace, getAllWorkspaces, deleteWorkspace, updateWorkspace, createNewNote, deleteNote, getNote, markAsFavourite, getAllFavNotes};
