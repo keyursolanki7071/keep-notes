@@ -10,6 +10,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useWorkspaceStore } from "@/stores/useWorkspaceStore";
+import { Loader2Icon } from "lucide-react";
 import React, { useState } from "react";
 
 interface WorkspaceFormProps {
@@ -21,6 +22,7 @@ const WorkspaceForm: React.FC<WorkspaceFormProps> = ({ isOpen, setIsOpen }) => {
   const [name, setName] = useState("");
   const [nameError, setNameError] = useState(false);
   const { createWorkspace } = useWorkspaceStore();
+  const [submitting, setSubmitting] = useState(false);
 
   const handleSubmit = async () => {
     setNameError(false);
@@ -28,9 +30,11 @@ const WorkspaceForm: React.FC<WorkspaceFormProps> = ({ isOpen, setIsOpen }) => {
       setNameError(true);
       return false;
     }
+    setSubmitting(true);
     await createWorkspace(name);
     setIsOpen(false);
     setName("");
+    setSubmitting(false);
   };
 
   return (
@@ -58,12 +62,17 @@ const WorkspaceForm: React.FC<WorkspaceFormProps> = ({ isOpen, setIsOpen }) => {
             )}
           </div>
         </div>
-        <DialogFooter>
-          <DialogClose onClick={() => setIsOpen(false)}>
+        <DialogFooter >
+          <DialogClose onClick={() => setIsOpen(false)} disabled={submitting}>
             <Button variant="outline">Cancel</Button>
           </DialogClose>
-          <Button type="button" onClick={handleSubmit}>
-            Save changes
+          <Button type="button" onClick={handleSubmit} disabled={submitting}>
+            {!submitting ? "Save" : (
+              <>
+              <Loader2Icon className="animate-spin"></Loader2Icon>
+              Saving
+              </>
+            ) }
           </Button>
         </DialogFooter>
       </DialogContent>

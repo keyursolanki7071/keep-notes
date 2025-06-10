@@ -1,15 +1,17 @@
 import supabase from "./supabase"
 
+const WORKSPACE_SELECT = `*, notes (*)`;
+
 const createWorkspace = async (name: string) => {
     const {data, error} = await supabase.from('workspaces').insert({
         name: name
-    }).select().single()
+    }).select(WORKSPACE_SELECT).single()
     if(error) throw error.message;
     return data;
 }
 
 const getAllWorkspaces = async () => {
-    const {data, error} = await supabase.from('workspaces').select(`*, notes (*)`);
+    const {data, error} = await supabase.from('workspaces').select(WORKSPACE_SELECT);
     if(error) error.message;
     return data;
 }
@@ -23,7 +25,7 @@ const deleteWorkspace = async (id: number) => {
 }
 
 const updateWorkspace = async (id: number, name: string) => {
-    const {data, error} = await supabase.from('workspaces').update({name: name}).eq('id', id).select().single();
+    const {data, error} = await supabase.from('workspaces').update({name: name}).eq('id', id).select(WORKSPACE_SELECT).single();
     if(error) {
         throw error.message;
     }

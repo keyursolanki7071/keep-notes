@@ -30,7 +30,7 @@ interface WorkspaceStore {
   getAllWorkspaces: () => Promise<void>;
   deleteWorkspace: (id: number) => Promise<void>;
   updateWorkspace: (id: number, name: string) => Promise<void>;
-  createNote: (workspace: number, name: string) => Promise<void>;
+  createNote: (workspace: number, name: string) => Promise<Note>;
   deleteNote: (id: number) => Promise<void>;
   getNote: (id: number) => Promise<Note>;
   markAsFavourite: (id: number, favourite: boolean) => Promise<Note>;
@@ -89,6 +89,7 @@ const useWorkspaceStore = create<WorkspaceStore>((set, get) => ({
           : ws
       );
       set({workspaces: updatedWorkspaces});
+      return data;
     } catch (error: any) {
       toast.error(error);
     }

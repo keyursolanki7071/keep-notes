@@ -22,7 +22,7 @@ export default function AuthLayout() {
               <NavActions />
             </div>
           </header>
-          <div className="flex flex-1 flex-col gap-4 px-4 py-10">
+          <div className="flex flex-1 flex-col gap-4 px-4 py-4">
             <div className="mx-auto h-full w-full rounded-xl">
                 <Outlet></Outlet>
             </div>

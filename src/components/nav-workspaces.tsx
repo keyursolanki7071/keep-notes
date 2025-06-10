@@ -1,11 +1,10 @@
 import {
   ChevronRight,
   Edit,
+  ListIcon,
   MoreHorizontal,
   Notebook,
-  PinIcon,
   Plus,
-  StarOff,
   Trash2,
 } from "lucide-react";
 
@@ -29,7 +28,7 @@ import {
 } from "@/components/ui/sidebar";
 import { Button } from "./ui/button";
 import WorkspaceForm from "./workspace/workspace-form";
-import React, { useState, type InputEvent } from "react";
+import { useState } from "react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -41,7 +40,7 @@ import type { Workspace } from "@/interfaces";
 import { useWorkspaceStore } from "@/stores/useWorkspaceStore";
 import { Input } from "./ui/input";
 import NewNoteForm from "./workspace/new-note-form";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 
 export function NavWorkspaces({ workspaces }: { workspaces: Workspace[] }) {
   const [openForm, setOpenForm] = useState(false);
@@ -50,12 +49,17 @@ export function NavWorkspaces({ workspaces }: { workspaces: Workspace[] }) {
     null
   );
   const { isMobile } = useSidebar();
-  const { deleteWorkspace, updateWorkspace } = useWorkspaceStore();
+  const { deleteWorkspace, updateWorkspace, activeNote, setActiveNote } = useWorkspaceStore();
   const [editWorkspace, setEditWorkspace] = useState<number | null>(null);
   const [updatedName, setUpdatedName] = useState("");
+  const navigate = useNavigate();
 
   const handleDelete = async (id: number) => {
     await deleteWorkspace(id);
+    if(activeNote?.workspace_id === id) {
+      setActiveNote(null);
+      return navigate("/");
+    }
   };
 
   const handleUpdate = async (e: KeyboardEvent) => {
@@ -95,8 +99,9 @@ export function NavWorkspaces({ workspaces }: { workspaces: Workspace[] }) {
                           onChange={(e) => setUpdatedName(e.target.value)}
                         ></Input>
                       ) : (
-                        <span className="pl-10">
-                          <span className="font-bold">{workspace.name}</span>
+                        <span >
+                          <ListIcon></ListIcon>
+                           <span className="font-bold">{workspace.name}</span>
                         </span>
                       )}
                     </SidebarMenuButton>
