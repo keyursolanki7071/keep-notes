@@ -67,7 +67,6 @@ const extensions = [
   History,
   SearchAndReplace,
   TableOfContents,
-  FormatPainter.configure({ spacer: true }),
   Clear,
   FontFamily,
   Heading.configure({ spacer: true }),
@@ -76,7 +75,6 @@ const extensions = [
   Italic,
   TextUnderline,
   Strike,
-  MoreMark,
   Emoji,
   Color.configure({ spacer: true }),
   Highlight,
@@ -92,24 +90,6 @@ const extensions = [
     },
   }),
   Link,
-  Image.configure({
-    upload: (files: File) => {
-      return new Promise((resolve) => {
-        setTimeout(() => {
-          resolve(URL.createObjectURL(files))
-        }, 500)
-      })
-    },
-  }),
-  Video.configure({
-    upload: (files: File) => {
-      return new Promise((resolve) => {
-        setTimeout(() => {
-          resolve(URL.createObjectURL(files))
-        }, 500)
-      })
-    },
-  }),
   Blockquote,
   SlashCommand,
   HorizontalRule,
@@ -121,64 +101,9 @@ const extensions = [
   Table,
   Iframe,
   ExportPdf.configure({ spacer: true }),
-  ImportWord.configure({
-    upload: (files: File[]) => {
-      const f = files.map(file => ({
-        src: URL.createObjectURL(file),
-        alt: file.name,
-      }))
-      return Promise.resolve(f)
-    },
-  }),
   ExportWord,
   TextDirection,
   Mention,
-  Attachment.configure({
-    upload: (file: any) => {
-      // fake upload return base 64
-      const reader = new FileReader()
-      reader.readAsDataURL(file)
-
-      return new Promise((resolve) => {
-        setTimeout(() => {
-          const blob = convertBase64ToBlob(reader.result as string)
-          resolve(URL.createObjectURL(blob))
-        }, 300)
-      })
-    },
-  }),
-
-  Katex,
-  Excalidraw,
-  Mermaid.configure({
-    upload: (file: any) => {
-      // fake upload return base 64
-      const reader = new FileReader()
-      reader.readAsDataURL(file)
-
-      return new Promise((resolve) => {
-        setTimeout(() => {
-          const blob = convertBase64ToBlob(reader.result as string)
-          resolve(URL.createObjectURL(blob))
-        }, 300)
-      })
-    },
-  }),
-  Drawer.configure({
-    upload: (file: any) => {
-      // fake upload return base 64
-      const reader = new FileReader()
-      reader.readAsDataURL(file)
-
-      return new Promise((resolve) => {
-        setTimeout(() => {
-          const blob = convertBase64ToBlob(reader.result as string)
-          resolve(URL.createObjectURL(blob))
-        }, 300)
-      })
-    },
-  }),
-  Twitter
 ]
 
 export default extensions;
