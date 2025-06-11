@@ -18,9 +18,8 @@ const getAllWorkspaces = async () => {
 
 const deleteWorkspace = async (id: number) => {
     const {data, error} = await supabase.from('workspaces').delete().eq('id', id);
-    if(error) {
-        throw error.message;
-    }
+    if(error) throw error.message;
+    
     return data;
 }
 
@@ -49,9 +48,8 @@ const deleteNote = async (id: number) => {
 
 const getNote = async (id: number) => {
     const {data,error} = await supabase.from('notes').select("*").eq('id', id).single();
-    if(error) {
-        throw error.message;
-    }
+    if(error) throw error.message;
+    
     return data;
 }
 
