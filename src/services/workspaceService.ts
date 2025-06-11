@@ -55,9 +55,7 @@ const getNote = async (id: number) => {
 
 const markAsFavourite = async (id: number, favourite: boolean) => {
     const {data, error} = await supabase.from('notes').update({favourite: favourite}).eq('id', id).select().single();
-    if(error) {
-        throw error.message;
-    }
+    if(error) throw error.message;
     return data;
 }
 
