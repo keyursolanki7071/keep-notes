@@ -33,8 +33,6 @@ import { TextUnderline } from 'reactjs-tiptap-editor/textunderline';
 import { TextDirection } from 'reactjs-tiptap-editor/textdirection';
 import { BaseKit } from 'reactjs-tiptap-editor'
 
-
-
 const extensions = [
   BaseKit.configure({
     placeholder: {

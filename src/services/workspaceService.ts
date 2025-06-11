@@ -26,9 +26,7 @@ const deleteWorkspace = async (id: number) => {
 
 const updateWorkspace = async (id: number, name: string) => {
     const {data, error} = await supabase.from('workspaces').update({name: name}).eq('id', id).select(WORKSPACE_SELECT).single();
-    if(error) {
-        throw error.message;
-    }
+    if(error) throw error.message;
     return data;
 }
 
