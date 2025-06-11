@@ -33,7 +33,7 @@ interface EditorProps {
 }
 
 const Editor: React.FC<EditorProps> = ({ content, setContent }) => {
-  const { isReady, editor, editorRef } = useEditorState();
+  const { editorRef } = useEditorState();
   const onValueChange = useCallback(
     debounce((value: any) => {
       setContent(value);

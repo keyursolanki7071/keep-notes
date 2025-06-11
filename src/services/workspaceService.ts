@@ -18,17 +18,14 @@ const getAllWorkspaces = async () => {
 
 const deleteWorkspace = async (id: number) => {
     const {data, error} = await supabase.from('workspaces').delete().eq('id', id);
-    if(error) {
-        throw error.message;
-    }
+    if(error) throw error.message;
+    
     return data;
 }
 
 const updateWorkspace = async (id: number, name: string) => {
     const {data, error} = await supabase.from('workspaces').update({name: name}).eq('id', id).select(WORKSPACE_SELECT).single();
-    if(error) {
-        throw error.message;
-    }
+    if(error) throw error.message;
     return data;
 }
 
@@ -51,17 +48,14 @@ const deleteNote = async (id: number) => {
 
 const getNote = async (id: number) => {
     const {data,error} = await supabase.from('notes').select("*").eq('id', id).single();
-    if(error) {
-        throw error.message;
-    }
+    if(error) throw error.message;
+    
     return data;
 }
 
 const markAsFavourite = async (id: number, favourite: boolean) => {
     const {data, error} = await supabase.from('notes').update({favourite: favourite}).eq('id', id).select().single();
-    if(error) {
-        throw error.message;
-    }
+    if(error) throw error.message;
     return data;
 }
 
